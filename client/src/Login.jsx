@@ -1,25 +1,79 @@
-
+import { useState } from "react";
+import axios from 'axios'
 
 const Login = () => {
-  return (
-  <form>
-  <div className="mb-3">
-    <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+  const [user, setUser] = useState({
+ 
+    email:"",
+    password:""
+  })
+
+  const handleChange = (e)=>{
+    const {name, value} = e.target
+    setUser({...user,[name]: value })
+  }
+
+  const handleClick =  async(e)=>{
+
+ const {email, password} = user
+    e.preventDefault()
+    if(email && password){
+    await axios.post('http://localhost:8080/login', {email,password})
+     .then(res => console.log(res))
+
+     .catch(err => console.log(err))
+
+    }
+    else{
+      alert("no record founds")
+    }
     
-  </div>
-  <div className="mb-3">
-    <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-    <input type="password" className="form-control" id="exampleInputPassword1" />
-  </div>
-  <div className="mb-3 form-check">
-    <input type="checkbox" className="form-check-input" id="exampleCheck1" />
-    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-  </div>
-  <button type="submit" className="btn btn-primary">Submit</button>
-</form>
+   
 
-  )
-}
+   
 
-export default Login
+  }
+
+  return (
+    <form>
+      
+      <div className="mb-3">
+        <label htmlFor="exampleInputEmail1" className="form-label">
+          Email address
+        </label>
+        <input
+          type="email"
+          className="form-control"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          name="email"
+          value={user.email}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="password" className="form-label">
+          Password
+        </label>
+        <input
+          type="password"
+          className="form-control"
+          id="exampleInputPassword1"
+          name="password"
+          value={user.password}
+          onChange={handleChange}
+        />
+      </div>
+
+      <button onClick={handleClick} type="submit" className="btn btn-primary">
+     login
+      </button>
+      
+      <button type="submit" className="btn m-5 btn-primary">
+       create an account
+      </button>
+    </form>
+  );
+};
+
+export default Login;

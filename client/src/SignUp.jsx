@@ -17,8 +17,10 @@ const SignUp = () => {
     const {name, email, password} = user
     e.preventDefault()
     if(name && email && password){
-      axios.post('http://localhost:8080/register', user)
-      .then(res => console.log(res))
+ axios.post('http://localhost:8080/register', user)
+ .then(res => console.log(res))
+   
+     
     }
     else{
       alert("no recored found")
@@ -35,10 +37,9 @@ const SignUp = () => {
          name
         </label>
         <input
-          type="text"
+          type="name"
           className="form-control"
-          id="exampleInputEmail1"
-          aria-describedby="emailHelp"
+  
           name="name"
           value={user.name}
           onChange={handleChange}
