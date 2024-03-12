@@ -1,13 +1,18 @@
 const User = require("../model/model");
+const jwt = require('jsonwebtoken')
 
 exports.createUser = async (req, res) => {
   const { name, email, password } = req.body;
+
+  
   try {
     const newUser = new User({
       name,
       email,
       password,
     });
+    var token = jwt.sign({email: req.body.email}, process.env.SECRET)
+    newUser.token = token
     const saveUser = await newUser.save();
     res.status(201).json(saveUser);
     console.log(saveUser);
