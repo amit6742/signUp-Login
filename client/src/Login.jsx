@@ -1,42 +1,43 @@
 import { useState } from "react";
-import axios from 'axios'
+import axios from 'axios';
+ import {Link,  useNavigate} from 'react-router-dom'
 
 const Login = () => {
   const [user, setUser] = useState({
- 
-    email:"",
-    password:""
-  })
+    email: "",
+    password: "",
+  });
+ const navigate = useNavigate()
 
-  const handleChange = (e)=>{
-    const {name, value} = e.target
-    setUser({...user,[name]: value })
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
 
-  const handleClick =  async(e)=>{
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const { email, password } = user;
 
- const {email, password} = user
-    e.preventDefault()
-    if(email && password){
-    await axios.post('http://localhost:8080/login', {email,password})
-     .then(res => console.log(res))
-
-     .catch(err => console.log(err))
-
+    if (email && password) {
+      try {
+        const response = await axios.post('http://localhost:8080/login/v1', { email, password });
+        if (response.data === "success") {
+          alert("You have logged in successfully");
+          navigate('/home')
+        } else {
+          alert("Invalid password");
+        }
+      } catch (error) {
+        console.log(error);
+        alert("An error occurred while logging in");
+      }
+    } else {
+      alert("Please fill in all fields");
     }
-    else{
-      alert("no record founds")
-    }
-    
-   
-
-   
-
-  }
+  };
 
   return (
     <form>
-      
       <div className="mb-3">
         <label htmlFor="exampleInputEmail1" className="form-label">
           Email address
@@ -64,14 +65,12 @@ const Login = () => {
           onChange={handleChange}
         />
       </div>
-
       <button onClick={handleClick} type="submit" className="btn btn-primary">
-     login
+        login
       </button>
-      
-      <button type="submit" className="btn m-5 btn-primary">
-       create an account
-      </button>
+      <Link to="/register" type="submit" className="btn m-2 btn-primary">
+      Create an Account
+      </Link>
     </form>
   );
 };

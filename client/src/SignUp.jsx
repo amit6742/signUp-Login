@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from 'axios'
+import {Link, useNavigate} from 'react-router-dom'
 
 const SignUp = () => {
   const [user, setUser] = useState({
@@ -7,6 +8,7 @@ const SignUp = () => {
     email:"",
     password:""
   })
+  const navigate =  useNavigate()
 
   const handleChange = (e)=>{
     const {name, value} = e.target
@@ -19,6 +21,9 @@ const SignUp = () => {
     if(name && email && password){
  axios.post('http://localhost:8080/register', user)
  .then(res => console.log(res))
+ alert("register Successfully")
+
+ navigate('/login')
    
      
     }
@@ -76,11 +81,17 @@ const SignUp = () => {
       <button onClick={handleClick} type="submit" className="btn btn-primary">
         registered
       </button>
+
+          <p>have already an account</p> 
       
-      <button type="submit" className="btn m-5 btn-primary">
-       login
-      </button>
+      
+      <Link to="/login" type="submit" className="btn m-2 btn-primary">
+      login
+      </Link>
+      
+      
     </form>
+    
   );
 };
 
