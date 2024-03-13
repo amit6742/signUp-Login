@@ -1,3 +1,4 @@
+const fs = require('fs')
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,15 +9,11 @@ const jwt = require("jsonwebtoken");
 const app = express();
 require("dotenv").config();
 
-app.use(morgan("default"));
-
 const auth = ((req, res, next) => {
- 
-
   try {
     const token = req.get("Authorization").split("Bearer ")[1];
     console.log(token);
-    var decoded = jwt.verify(token, process.env.SECRET);
+    var decoded = jwt.verify(token,process.env.SECRET);
     console.log(decoded);
     if (decoded) {
       next();
@@ -29,11 +26,16 @@ const auth = ((req, res, next) => {
   }
 });
 
+
+app.use(morgan("default"));
+
 app.use(cors());
 app.use(express.json());
 
-app.use("/register", auth, userRouter.router);
-app.use("/login",auth, userRouter.router);
+app.use("/register",  userRouter.router);
+app.use("/login",  userRouter.router);
+
+
 
 
 const connectDB = async () => {

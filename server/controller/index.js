@@ -1,18 +1,19 @@
+const bcrypt = require("bcrypt");
 const User = require("../model/model");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 exports.createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  
   try {
+    const hashPassword = bcrypt.hashSync(password, 10);
     const newUser = new User({
       name,
       email,
-      password,
+      password: hashPassword,
     });
-    var token = jwt.sign({email: req.body.email}, process.env.SECRET)
-    newUser.token = token
+    var token = jwt.sign({ email: req.body.email }, process.env.SECRET);
+    newUser.token = token;
     const saveUser = await newUser.save();
     res.status(201).json(saveUser);
     console.log(saveUser);
@@ -39,38 +40,31 @@ exports.loginUser = async (req, res) => {
 };
 //   get all find
 exports.getUser = async (req, res) => {
-  const user = await User.find();
-  console.log(user);
-
+  const query = User.find();
   try {
-    res.status(200).json(user);
+    if (req.query) {
+      const user = await query.sort(req.query).exec();
+      console.log(user);
+      res.status(200).json(user);
+    } else {
+      const user = await query.exec();
+      console.log(user);
+      res.status(200).json(user);
+    }
   } catch (error) {
     res.status(500).send(error);
   }
 };
 //  get user find by id base
 
-exports.updateUser = async (req, res) => {
-  const id = req.params.body;
-  console.log(id);
-  try {
-    const doc = await User.findOneAndUpdate({ _id: id }, req.body, {
-      new: true,
-    });
-    res.status(201).json(doc);
-    console.log(doc, id);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-};
-
 //  delete user
 exports.deleteUser = async (req, res) => {
-  const id = req.params.body;
-  console.log(id);
+  const id = req.params.id;
 
+  console.log(id);
   try {
     const doc = await User.findOneAndDelete({ _id: id });
+
     res.status(201).json(doc);
   } catch (error) {
     res.status(400).json(error);
