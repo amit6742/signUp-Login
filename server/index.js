@@ -1,5 +1,6 @@
 const fs = require('fs')
 const express = require("express");
+require('./event.js')
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require("../server/routes/index");
@@ -7,6 +8,8 @@ const morgan = require("morgan");
 const jwt = require("jsonwebtoken");
 
 const app = express();
+
+
 require("dotenv").config();
 
 const auth = ((req, res, next) => {
@@ -48,6 +51,9 @@ const connectDB = async () => {
 };
 
 connectDB();
+
+
+
 
 app.listen(process.env.PORT, () =>
   console.log(`server is ready ${process.env.PORT}`)
